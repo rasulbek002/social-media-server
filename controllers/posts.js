@@ -1,7 +1,7 @@
 // External dependencies
 import mongoose from "mongoose";
 // Local dependencies
-import PostMessage from "../social-media-server/models/postMessage.js";
+import PostMessage from "../models/postMessage.js";
 
 export async function getPosts(req, res) {
   try {
@@ -60,7 +60,7 @@ export async function updatePost(req, res) {
 export async function getPost(req, res) {
   const { id: _id } = req.params;
   console.log(_id);
-  console.log('get post')
+  console.log("get post");
 
   if (!mongoose.Types.ObjectId.isValid(_id))
     return res
@@ -70,4 +70,20 @@ export async function getPost(req, res) {
   const item = await PostMessage.findById(_id);
 
   res.status(200).json(item);
+}
+
+export function deletePost(req, res) {
+  const id = req.params.id;
+  const filter = { _id: id };
+  PostMessage.deleteOne(filter, (err, result) => {
+    if (err) {
+      res.status(500).send({
+        error: "Error deleting item: " + err,
+      });
+    } else {
+      res.send({
+        message: "Item deleted successfully",
+      });
+    }
+  });
 }
